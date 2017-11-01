@@ -1,11 +1,13 @@
 #ifndef COMMENTPARSER_H
 #define COMMENTPARSER_H
 
+class QString;
 
-class CommentParser
-{
+class CommentParser {
+
 public:
-    CommentParser();
+  static QString RearrangeSimpleComments(const QString &comment);
+  static void IdentifyCommentTypes(const QString &file);
 };
 
 #endif // COMMENTPARSER_H
