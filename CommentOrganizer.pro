@@ -24,9 +24,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    commentparser.cpp
 
 HEADERS  += mainwindow.h \
-    doctest.h
+    doctest.h \
+    commentparser.h
 
 FORMS    += mainwindow.ui

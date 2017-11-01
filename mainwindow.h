@@ -12,6 +12,7 @@ class MainWindow : public QMainWindow {
 
  public:
   explicit MainWindow(QWidget *parent = 0);
+  static int Factorial(int number);
   ~MainWindow();
 
  private slots:
