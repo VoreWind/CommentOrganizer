@@ -1,21 +1,18 @@
 #include <QApplication>
+#include <QTextCodec>
+
 #include "mainwindow.h"
 
-#define DOCTEST_CONFIG_IMPLEMENT
-#include "doctest.h"
-
 int main(int argc, char *argv[]) {
-  doctest::Context context;
-  context.applyCommandLine(argc, argv);
-
-  int res = context.run();
-  if (context.shouldExit()) {
-    return res;
-  }
-
   QApplication a(argc, argv);
+
+  auto cyrillic_codec = QTextCodec::codecForName("UTF-8");
+  QTextCodec::setCodecForTr(cyrillic_codec);
+  QTextCodec::setCodecForLocale(cyrillic_codec);
+  QTextCodec::setCodecForCStrings(cyrillic_codec);
+
   MainWindow w;
   w.show();
 
-  return a.exec() + res;
+  return a.exec();
 }

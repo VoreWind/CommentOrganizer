@@ -6,7 +6,7 @@ class QString;
 class CommentParser {
 
 public:
-  static QString RearrangeSimpleComments(const QString &comment);
+  static QString RearrangeOneStringComments(const QString &comment);
   static void IdentifyCommentTypes(const QString &file);
 };
 
