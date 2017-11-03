@@ -9,6 +9,7 @@ class CommentParser {
 
  private:
   static QString RearrangeMultipleStringComments(const QString &comment);
+  static QString RearrangeDoxyGenComments(const QString &comment);
 };
 
 #endif  // COMMENTPARSER_H

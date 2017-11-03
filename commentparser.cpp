@@ -11,15 +11,17 @@ QString CommentParser::RewrieCommentsAccordingToCodeStyle(
   QRegExp multi_line_comment_reg_exp("\\/\\*.*\\*\\/");
   multi_line_comment_reg_exp.setMinimal(true);
   int first_index = multi_line_comment_reg_exp.indexIn(edited_file_text);
-  QStringList captured_comments = multi_line_comment_reg_exp.capturedTexts();
+  QStringList captured_comments;
 
-  edited_file_text.remove(multi_line_comment_reg_exp);
   while (first_index != -1) {
+    QStringList locally_captured_list =
+        multi_line_comment_reg_exp.capturedTexts();
     first_index =
         multi_line_comment_reg_exp.indexIn(edited_file_text, first_index + 1);
-    captured_comments.append(multi_line_comment_reg_exp.capturedTexts());
+
+    captured_comments.append(locally_captured_list);
   }
-  qDebug() << captured_comments;
+  qDebug() << captured_comments.count();
 
   for (const auto &captured_comment : captured_comments) {
     QString edited_comment = RearrangeMultipleStringComments(captured_comment);
@@ -35,8 +37,9 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
 
   edited_comment = edited_comment.trimmed();
 
-  QRegExp line_breaker_regexp("\n[ *]*");
-  line_breaker_regexp.setMinimal(true);
+  QRegExp line_breaker_regexp("\n[ \\*]*");
+
+  edited_comment.remove(line_breaker_regexp);
 
   if (!edited_comment.endsWith(".")) {
     edited_comment.append(".");
@@ -47,3 +50,5 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
   qDebug() << comment << edited_comment;
   return edited_comment;
 }
+
+QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {}

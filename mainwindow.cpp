@@ -14,7 +14,7 @@ MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::CleanComments() {
   QString text = ui->text_edit->toPlainText();
-  CommentParser::RewrieCommentsAccordingToCodeStyle(text);
+  text = CommentParser::RewrieCommentsAccordingToCodeStyle(text);
 
   ui->text_edit->setPlainText(text);
 }
