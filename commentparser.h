@@ -12,6 +12,8 @@ class CommentParser {
  private:
   static QString RearrangeMultipleStringComments(const QString &comment);
   static QString RearrangeDoxyGenComments(const QString &comment);
+  static QString CleanCommentsClutter(const QString &comment);
+
   static QStringList FindCommentsMatchingRegexp(QString edited_file_text,
                                                 QString reg_exp_text);
 };

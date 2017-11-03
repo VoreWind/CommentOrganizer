@@ -26,9 +26,11 @@ QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    commentparser.cpp
+    commentparser.cpp \
+    commentparser_test.cpp
 
 HEADERS  += mainwindow.h \
-    commentparser.h
+    commentparser.h \
+    doctest.h
 
 FORMS    += mainwindow.ui

@@ -82,7 +82,7 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
     comment_string = comment_string.trimmed();
     if (!comment_string.isEmpty()) {
       comment_string.replace("\n", " ");
-      comment_string.prepend("  /// @ ");
+      comment_string.prepend("  /// @");
 
       if (!comment_string.endsWith(".")) {
         comment_string.append(".");
@@ -90,6 +90,14 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
       edited_comment.append(comment_string + "\n");
     }
   }
+  edited_comment.chop(1);
+  return edited_comment;
+}
 
-  return edited_comment.trimmed();
+QString CommentParser::CleanCommentsClutter(const QString &comment) {
+  QString cleaned_comment = comment;
+  cleaned_comment.remove("/*");
+  cleaned_comment.remove("*/");
+
+  return cleaned_comment.trimmed();
 }
