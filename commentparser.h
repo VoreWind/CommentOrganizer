@@ -4,10 +4,11 @@
 class QString;
 
 class CommentParser {
+ public:
+  static QString RewrieCommentsAccordingToCodeStyle(const QString &file_text);
 
-public:
-  static QString RearrangeOneStringComments(const QString &comment);
-  static void IdentifyCommentTypes(const QString &file);
+ private:
+  static QString RearrangeMultipleStringComments(const QString &comment);
 };
 
-#endif // COMMENTPARSER_H
+#endif  // COMMENTPARSER_H
