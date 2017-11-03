@@ -27,6 +27,7 @@
       <property name="plainText">
        <string>/**
  * @brief creates a copy of source buff_t structure
+ * other
  * @param source
  * @return copy of source
  */
