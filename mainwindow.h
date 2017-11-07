@@ -17,7 +17,14 @@ class MainWindow : public QMainWindow {
  private slots:
   void CleanComments();
 
+  void SelectSourceFolder();
+  void SelectDestinationFolder();
+
+  void CleanAllTextInFolder();
+
  private:
+  QString CleanCommentsFromString(const QString &text);
+
   Ui::MainWindow *ui;
 };
 

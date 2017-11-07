@@ -23,9 +23,22 @@ QStringList CommentParser::FindCommentsMatchingRegexp(QString edited_file_text,
   return captured_comments;
 }
 
-QString CommentParser::RewrieCommentsAccordingToCodeStyle(
+QString CommentParser::RewriteCommentsAccordingToCodeStyle(
     const QString &file_text) {
   QString edited_file_text = file_text;
+
+  QStringList inline_comments = FindCommentsMatchingRegexp(
+      edited_file_text, "[[\\w \\(\\)]*\\/\\*.*\\*\\/[\\w \\(\\)]+");
+
+  for (const auto &captured_comment : inline_comments) {
+    QString edited_comment = captured_comment;
+    QRegExp actual_inline_comment_regexp("\\/\\*.*\\*\\/");
+    int comment_position =
+        actual_inline_comment_regexp.indexIn(captured_comment);
+    QString comment = actual_inline_comment_regexp.capturedTexts().at(0);
+    edited_comment.remove(comment);
+    edited_file_text.replace(captured_comment, edited_comment);
+  }
 
   QStringList doxy_gen_comments =
       FindCommentsMatchingRegexp(edited_file_text, "\\/\\*\\*.*\\*\\/");
@@ -59,10 +72,19 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
   if (!edited_comment.endsWith(".")) {
     edited_comment.append(".");
   }
+  bool is_blue_comment = edited_comment.startsWith("!");
+  if (is_blue_comment) {
+    edited_comment.remove(0, 1);
+  }
+
   QString first_letter = edited_comment.left(1);
   edited_comment.replace(0, 1, first_letter.toUpper());
-  edited_comment.prepend("  // ");
-  qDebug() << comment << edited_comment;
+
+  if (is_blue_comment) {
+    edited_comment.prepend("/// ");
+  } else {
+    edited_comment.prepend("// ");
+  }
   return edited_comment;
 }
 

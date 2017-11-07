@@ -7,7 +7,7 @@ class QStringList;
 
 class CommentParser {
  public:
-  static QString RewrieCommentsAccordingToCodeStyle(const QString &file_text);
+  static QString RewriteCommentsAccordingToCodeStyle(const QString &file_text);
 
  private:
   static QString RearrangeMultipleStringComments(const QString &comment);

@@ -18,11 +18,53 @@
     <item row="1" column="0">
      <widget class="QPushButton" name="clean_button">
       <property name="text">
-       <string>PushButton</string>
+       <string>Clean comments</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
+    <item row="2" column="0" colspan="4">
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Source Directory</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QPushButton" name="source_directory_button">
+      <property name="text">
+       <string>Choose Folder</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Output Directory</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="3">
+     <widget class="QPushButton" name="destination_directory_button">
+      <property name="text">
+       <string>Choose Folder</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QCheckBox" name="is_recursive_check">
+      <property name="text">
+       <string>Recursive</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="4">
      <widget class="QPlainTextEdit" name="text_edit">
       <property name="plainText">
        <string>/**
@@ -80,6 +122,19 @@ int readFdev_MU(const char *file_name,
       return DEVICE_TYPE_ERROR;
   }
 }</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1" colspan="2">
+     <widget class="QLineEdit" name="source_directory_line"/>
+    </item>
+    <item row="4" column="1" colspan="2">
+     <widget class="QLineEdit" name="destination_directory_line"/>
+    </item>
+    <item row="5" column="2" colspan="2">
+     <widget class="QPushButton" name="clean_all_button">
+      <property name="text">
+       <string>Clean All</string>
       </property>
      </widget>
     </item>
