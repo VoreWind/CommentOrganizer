@@ -41,7 +41,7 @@ QString CommentParser::RewriteCommentsAccordingToCodeStyle(
   }
 
   QStringList doxy_gen_comments =
-      FindCommentsMatchingRegexp(edited_file_text, "\\/\\*\\*.*\\*\\/");
+      FindCommentsMatchingRegexp(edited_file_text, "\\/\\*[*!].*\\*\\/");
 
   for (const auto &captured_comment : doxy_gen_comments) {
     QString edited_comment = RearrangeDoxyGenComments(captured_comment);
@@ -95,16 +95,30 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
 
   edited_comment = edited_comment.trimmed();
 
-  QRegExp space_regexp("[ \\*]+");
-  edited_comment.replace(space_regexp, " ");
+  QRegExp space_regexp("[ \\*!]+");
+  int first_occurence = space_regexp.indexIn(edited_comment);
+  edited_comment.replace(first_occurence, space_regexp.matchedLength(), " ");
 
-  QStringList comment_strings = edited_comment.split("@");
+  QString split_up_token;
+  if (edited_comment.contains("@")) {
+    split_up_token = "@";
+  } else {
+    split_up_token = "\\";
+  }
+
+  QStringList comment_strings =
+      SplitStringKeepingSeparartor(edited_comment, split_up_token);
+
   edited_comment.clear();
   for (auto comment_string : comment_strings) {
     comment_string = comment_string.trimmed();
     if (!comment_string.isEmpty()) {
       comment_string.replace("\n", " ");
-      comment_string.prepend("  /// @");
+
+      QString first_letter = comment_string.left(1);
+      comment_string.replace(0, 1, first_letter.toUpper());
+
+      comment_string.prepend("/// ");
 
       if (!comment_string.endsWith(".")) {
         comment_string.append(".");
@@ -122,4 +136,18 @@ QString CommentParser::CleanCommentsClutter(const QString &comment) {
   cleaned_comment.remove("*/");
 
   return cleaned_comment.trimmed();
+}
+
+QStringList CommentParser::SplitStringKeepingSeparartor(
+    const QString &string, const QString &separator) {
+  QStringList split_strings;
+  int separator_count = string.count(separator);
+  for (int i = 0; i < separator_count; ++i) {
+    split_strings.append(
+        string.section(separator, i, i, QString::SectionIncludeLeadingSep));
+  }
+  if (split_strings.isEmpty()) {
+    return {string};
+  }
+  return split_strings;
 }
