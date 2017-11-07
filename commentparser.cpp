@@ -95,9 +95,7 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
 
   edited_comment = edited_comment.trimmed();
 
-  QRegExp space_regexp("[ \\*!]+");
-  int first_occurence = space_regexp.indexIn(edited_comment);
-  edited_comment.replace(first_occurence, space_regexp.matchedLength(), " ");
+  edited_comment = RemoveDecorationsFromStartOfString(edited_comment);
 
   QString split_up_token;
   if (edited_comment.contains("@")) {
@@ -113,8 +111,6 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
   for (auto comment_string : comment_strings) {
     comment_string = comment_string.trimmed();
     if (!comment_string.isEmpty()) {
-      comment_string.replace("\n", " ");
-
       QString first_letter = comment_string.left(1);
       comment_string.replace(0, 1, first_letter.toUpper());
 
@@ -127,6 +123,21 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
     }
   }
   edited_comment.chop(1);
+  return edited_comment;
+}
+
+QString CommentParser::RemoveDecorationsFromStartOfString(
+    const QString &comment) {
+  QStringList comment_lines = comment.split("\n");
+  QString edited_comment;
+  for (auto comment_line : comment_lines) {
+    QRegExp space_regexp("[ \\\*!]+");
+    int first_occurence = space_regexp.indexIn(comment_line);
+    comment_line.replace(first_occurence, space_regexp.matchedLength(), " ");
+    edited_comment.append(comment_line + "\n");
+  }
+  edited_comment.chop(1);
+
   return edited_comment;
 }
 
@@ -143,8 +154,8 @@ QStringList CommentParser::SplitStringKeepingSeparartor(
   QStringList split_strings;
   int separator_count = string.count(separator);
   for (int i = 0; i < separator_count; ++i) {
-    split_strings.append(
-        string.section(separator, i, i, QString::SectionIncludeLeadingSep));
+    split_strings.append(string.section(separator, i + 1, i + 1,
+                                        QString::SectionIncludeLeadingSep));
   }
   if (split_strings.isEmpty()) {
     return {string};

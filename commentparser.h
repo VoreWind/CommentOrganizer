@@ -18,6 +18,8 @@ class CommentParser {
                                                   const QString &separator);
   static QStringList FindCommentsMatchingRegexp(QString edited_file_text,
                                                 QString reg_exp_text);
+
+  static QString RemoveDecorationsFromStartOfString(const QString &comment);
 };
 
 #endif  // COMMENTPARSER_H
