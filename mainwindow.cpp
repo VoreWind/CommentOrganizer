@@ -54,7 +54,8 @@ void MainWindow::CleanAllTextInFolder() {
     flag = QDirIterator::Subdirectories;
   }
 
-  QDirIterator it(ui->source_directory_line->text(), QStringList() << "*.h",
+  QDirIterator it(ui->source_directory_line->text(), QStringList() << "*.h"
+                                                                   << "*.c",
                   QDir::Files, flag);
 
   while (it.hasNext()) {
