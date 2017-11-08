@@ -71,8 +71,8 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
     edited_comment.append(".");
   }
 
-  //  QString first_letter = edited_comment.left(1);
-  //  edited_comment.replace(0, 1, first_letter.toUpper());
+  QString first_letter = edited_comment.left(1);
+  edited_comment.replace(0, 1, first_letter.toUpper());
 
   edited_comment.prepend("// ");
   return edited_comment;
