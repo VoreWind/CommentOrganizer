@@ -60,10 +60,8 @@ QString CommentParser::RewriteCommentsAccordingToCodeStyle(
 
 QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
   QString edited_comment = comment;
-  edited_comment.remove("/*");
-  edited_comment.remove("*/");
 
-  edited_comment = edited_comment.trimmed();
+  edited_comment = CleanCommentsClutter(edited_comment);
 
   QRegExp line_breaker_regexp("\n[ \\*]*");
 
@@ -72,15 +70,15 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
   if (!edited_comment.endsWith(".")) {
     edited_comment.append(".");
   }
-  bool is_blue_comment = edited_comment.startsWith("!");
-  if (is_blue_comment) {
+  bool is_triple_slash_comment = edited_comment.startsWith("!");
+  if (is_triple_slash_comment) {
     edited_comment.remove(0, 1);
   }
 
   QString first_letter = edited_comment.left(1);
   edited_comment.replace(0, 1, first_letter.toUpper());
 
-  if (is_blue_comment) {
+  if (is_triple_slash_comment) {
     edited_comment.prepend("/// ");
   } else {
     edited_comment.prepend("// ");
@@ -90,10 +88,7 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
 
 QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
   QString edited_comment = comment;
-  edited_comment.remove("/*");
-  edited_comment.remove("*/");
-
-  edited_comment = edited_comment.trimmed();
+  edited_comment = CleanCommentsClutter(edited_comment);
 
   edited_comment = RemoveDecorationsFromStartOfString(edited_comment);
 
@@ -153,10 +148,11 @@ QStringList CommentParser::SplitStringKeepingSeparartor(
     const QString &string, const QString &separator) {
   QStringList split_strings;
   int separator_count = string.count(separator);
-  for (int i = 0; i < separator_count; ++i) {
-    split_strings.append(string.section(separator, i + 1, i + 1,
-                                        QString::SectionIncludeLeadingSep));
+  for (int i = 0; i <= separator_count; ++i) {
+    split_strings.append(
+        string.section(separator, i, i, QString::SectionIncludeLeadingSep));
   }
+
   if (split_strings.isEmpty()) {
     return {string};
   }
