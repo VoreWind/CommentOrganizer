@@ -10,8 +10,11 @@ class CommentParser {
   static QString RewriteCommentsAccordingToCodeStyle(const QString &file_text);
 
  private:
+  static QString RemoveCommentFromTheMiddleOfLine(
+      const QString &line_with_comment);
   static QString RearrangeMultipleStringComments(const QString &comment);
   static QString RearrangeDoxyGenComments(const QString &comment);
+
   static QString CleanCommentsClutter(const QString &comment);
 
   static QStringList SplitStringKeepingSeparartor(const QString &string,
@@ -20,6 +23,11 @@ class CommentParser {
                                                 QString reg_exp_text);
 
   static QString RemoveDecorationsFromStartOfString(const QString &comment);
+
+  static QString RearrangeCommentsFound(
+      const QString &regex_string,
+      const QString &text,
+      QString (*rearrangement_method)(const QString &));
 };
 
 #endif  // COMMENTPARSER_H

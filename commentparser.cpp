@@ -27,35 +27,43 @@ QString CommentParser::RewriteCommentsAccordingToCodeStyle(
     const QString &file_text) {
   QString edited_file_text = file_text;
 
-  QStringList inline_comments = FindCommentsMatchingRegexp(
-      edited_file_text, "[[\\w \\(\\)]*\\/\\*.*\\*\\/[\\w \\(\\)]+");
+  edited_file_text = RearrangeCommentsFound(
+      "[[\\w \\(\\)]*\\/\\*.*\\*\\/[\\w \\(\\)]+", edited_file_text,
+      *RemoveCommentFromTheMiddleOfLine);
+
+  edited_file_text = RearrangeCommentsFound(
+      "\\/\\*[*!].*\\*\\/", edited_file_text, *RearrangeDoxyGenComments);
+
+  edited_file_text = RearrangeCommentsFound("\\/\\*.*\\*\\/", edited_file_text,
+                                            *RearrangeMultipleStringComments);
+
+  return edited_file_text;
+}
+
+QString CommentParser::RemoveCommentFromTheMiddleOfLine(
+    const QString &line_with_comment) {
+  QString edited_comment = line_with_comment;
+  QRegExp actual_inline_comment_regexp("\\/\\*.*\\*\\/");
+  int comment_position =
+      actual_inline_comment_regexp.indexIn(line_with_comment);
+  QString comment = actual_inline_comment_regexp.capturedTexts().at(0);
+  edited_comment.remove(comment);
+  return edited_comment;
+}
+
+QString CommentParser::RearrangeCommentsFound(
+    const QString &regex_string,
+    const QString &text,
+    QString (*rearrangement_method)(const QString &)) {
+  QString edited_text = text;
+  QStringList inline_comments =
+      FindCommentsMatchingRegexp(edited_text, regex_string);
 
   for (const auto &captured_comment : inline_comments) {
-    QString edited_comment = captured_comment;
-    QRegExp actual_inline_comment_regexp("\\/\\*.*\\*\\/");
-    int comment_position =
-        actual_inline_comment_regexp.indexIn(captured_comment);
-    QString comment = actual_inline_comment_regexp.capturedTexts().at(0);
-    edited_comment.remove(comment);
-    edited_file_text.replace(captured_comment, edited_comment);
+    QString edited_comment = rearrangement_method(captured_comment);
+    edited_text.replace(captured_comment, edited_comment);
   }
-
-  QStringList doxy_gen_comments =
-      FindCommentsMatchingRegexp(edited_file_text, "\\/\\*[*!].*\\*\\/");
-
-  for (const auto &captured_comment : doxy_gen_comments) {
-    QString edited_comment = RearrangeDoxyGenComments(captured_comment);
-    edited_file_text.replace(captured_comment, edited_comment);
-  }
-
-  QStringList multi_line_comments =
-      FindCommentsMatchingRegexp(edited_file_text, "\\/\\*.*\\*\\/");
-
-  for (const auto &captured_comment : multi_line_comments) {
-    QString edited_comment = RearrangeMultipleStringComments(captured_comment);
-    edited_file_text.replace(captured_comment, edited_comment);
-  }
-  return edited_file_text;
+  return edited_text;
 }
 
 QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
