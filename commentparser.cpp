@@ -70,19 +70,11 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
   if (!edited_comment.endsWith(".")) {
     edited_comment.append(".");
   }
-  bool is_triple_slash_comment = edited_comment.startsWith("!");
-  if (is_triple_slash_comment) {
-    edited_comment.remove(0, 1);
-  }
 
-  QString first_letter = edited_comment.left(1);
-  edited_comment.replace(0, 1, first_letter.toUpper());
+  //  QString first_letter = edited_comment.left(1);
+  //  edited_comment.replace(0, 1, first_letter.toUpper());
 
-  if (is_triple_slash_comment) {
-    edited_comment.prepend("/// ");
-  } else {
-    edited_comment.prepend("// ");
-  }
+  edited_comment.prepend("// ");
   return edited_comment;
 }
 
@@ -153,8 +145,5 @@ QStringList CommentParser::SplitStringKeepingSeparartor(
         string.section(separator, i, i, QString::SectionIncludeLeadingSep));
   }
 
-  if (split_strings.isEmpty()) {
-    return {string};
-  }
   return split_strings;
 }
