@@ -113,7 +113,7 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
     if (!comment_string.isEmpty()) {
       QString first_letter = comment_string.left(1);
       comment_string.replace(0, 1, first_letter.toUpper());
-
+      comment_string.replace("\n", " ");
       comment_string.prepend("/// ");
 
       if (!comment_string.endsWith(".")) {
@@ -131,7 +131,7 @@ QString CommentParser::RemoveDecorationsFromStartOfString(
   QStringList comment_lines = comment.split("\n");
   QString edited_comment;
   for (auto comment_line : comment_lines) {
-    QRegExp space_regexp("[ \\\*!]+");
+    QRegExp space_regexp("[ \\*!]+");
     int first_occurence = space_regexp.indexIn(comment_line);
     comment_line.replace(first_occurence, space_regexp.matchedLength(), " ");
     edited_comment.append(comment_line + "\n");

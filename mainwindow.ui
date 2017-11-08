@@ -15,13 +15,6 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QPushButton" name="clean_button">
-      <property name="text">
-       <string>Clean comments</string>
-      </property>
-     </widget>
-    </item>
     <item row="2" column="0" colspan="4">
      <widget class="Line" name="line">
       <property name="orientation">
@@ -135,6 +128,13 @@ int readFdev_MU(const char *file_name,
      <widget class="QPushButton" name="clean_all_button">
       <property name="text">
        <string>Clean All</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="4">
+     <widget class="QPushButton" name="clean_button">
+      <property name="text">
+       <string>Clean comments</string>
       </property>
      </widget>
     </item>
