@@ -28,7 +28,7 @@ QString CommentParser::RewriteCommentsAccordingToCodeStyle(
   QString edited_file_text = file_text;
 
   edited_file_text = RearrangeCommentsFound(
-      "[[\\w \\(\\)]*\\/\\*.*\\*\\/[\\w \\(\\)]+", edited_file_text,
+      "[[\\w \\(\\)]*\\/\\*[^\n]*\\*\\/[^\\n]+", edited_file_text,
       *RemoveCommentFromTheMiddleOfLine);
 
   edited_file_text = RearrangeCommentsFound(

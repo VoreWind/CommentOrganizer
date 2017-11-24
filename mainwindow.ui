@@ -60,61 +60,19 @@
     <item row="0" column="0" colspan="4">
      <widget class="QPlainTextEdit" name="text_edit">
       <property name="plainText">
-       <string>/**
- * @brief creates a copy of source buff_t structure
- * other
- * @param source
- * @return copy of source
- */
-buff_t *create_copy_of_buff_t(buff_t *source) {
-  int status = 0;
-  buff_t *copy = NULL;
-}
+       <string>#ifndef BASE_ERRORS_H
+#define BASE_ERRORS_H
 
-/*device mount function*/
-int mount_dev(_DEV_T dev) {
-  errno = 0;
-  switch (dev) {
-    case _FD0:
-      mount(FD_DEV, MOUNT_DIR, DOS_FS, MS_SYNCHRONOUS, FDMOUNT_DATA);
-      break;
-    case _CK3:
-      mount(CK3_DEV, MOUNT_DIR, LIN_FS, 0, &quot;&quot;);
-      break;
-    case _CD:
-      mount(CDROM_DEV, MOUNT_DIR, CD_FS, MS_RDONLY, CDMOUNT_DATA);
-      break;
-    default:
-      return DEVICE_TYPE_ERROR;
-  }
+/* Maybe life is
+ * really painful: */
 
-  if (errno) return DEVICE_MOUNT_ERROR;
-  return 0;
-}
+static const char* const errors_list[] = {
+/*0*/           &quot;You win&quot;,
 
-/*lorem ipsum semper setis formantic pdpe i like testing things
- * ang trash*/
+};
 
-int readFdev_MU(const char *file_name,
-                void **data,
-                size_t *data_size,
-                _DEV_T dev) {
-  if (!file_name || !data || !data_size) return MEMORY_SEND_ERROR;
-  errno = 0;
-  switch (dev) {
-    case _FD0:
-      mount(FD_DEV, MOUNT_DIR, DOS_FS, MS_SYNCHRONOUS, FDMOUNT_DATA);
-      break;
-    case _CK3:
-      mount(CK3_DEV, MOUNT_DIR, LIN_FS, 0, &quot;&quot;);
-      break;
-    case _CD:
-      mount(CDROM_DEV, MOUNT_DIR, CD_FS, MS_RDONLY, CDMOUNT_DATA);
-      break;
-    default:
-      return DEVICE_TYPE_ERROR;
-  }
-}</string>
+
+#endif  // BASE_ERRORS_H</string>
       </property>
      </widget>
     </item>
