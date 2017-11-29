@@ -126,4 +126,22 @@ SCENARIO("Rewriting single comments according to code style") {
       }
     }
   }
+
+  GIVEN("extern C comment at the end of pure C block") {
+    QString wrong_source_code =
+        "#ifdef __cplusplus\n} /* extern \"C\" { */\n#endif";
+
+    WHEN("Run the wrong code through comment parser") {
+      auto parsed_source_code =
+          CommentParser::RewriteCommentsAccordingToCodeStyle(wrong_source_code);
+      THEN("This text in the comments should not be affected by parser") {
+        QString right_source_code =
+            "#ifdef __cplusplus\n}  // extern \"C\" {\n#endif";
+        REQUIRE(parsed_source_code.toStdString() ==
+                right_source_code.toStdString());
+      }
+    }
+  }
 }
+
+// TODO add tags wit ha single letter
