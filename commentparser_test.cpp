@@ -161,5 +161,3 @@ SCENARIO("Rewriting single comments according to code style") {
     }
   }
 }
-
-// TODO add tags wit ha single letter
