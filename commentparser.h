@@ -18,7 +18,7 @@ class CommentParser {
   static QString CleanCommentsClutter(const QString &comment);
 
   static QStringList SplitStringKeepingSeparartor(const QString &string,
-                                                  const QString &separator);
+                                                  const QRegExp &separator);
   static QStringList FindCommentsMatchingRegexp(QString edited_file_text,
                                                 QString reg_exp_text);
 

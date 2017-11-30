@@ -70,17 +70,19 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
   QString edited_comment = comment;
 
   edited_comment = CleanCommentsClutter(edited_comment);
+  if (!edited_comment.contains("extern \"C\" {") &&
+      !edited_comment.contains("namespace ")) {
+    QRegExp line_breaker_regexp("\n[ \\*]*");
 
-  QRegExp line_breaker_regexp("\n[ \\*]*");
+    edited_comment.replace(line_breaker_regexp, " ");
 
-  edited_comment.replace(line_breaker_regexp, " ");
+    if (!edited_comment.endsWith(".")) {
+      edited_comment.append(".");
+    }
 
-  if (!edited_comment.endsWith(".")) {
-    edited_comment.append(".");
+    QString first_letter = edited_comment.left(1);
+    edited_comment.replace(0, 1, first_letter.toUpper());
   }
-
-  QString first_letter = edited_comment.left(1);
-  edited_comment.replace(0, 1, first_letter.toUpper());
 
   edited_comment.prepend("// ");
   return edited_comment;
@@ -96,16 +98,23 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
   if (edited_comment.contains("@")) {
     split_up_token = "@";
   } else {
-    split_up_token = "\\";
+    split_up_token = "\\\\";
   }
 
+  QRegExp single_character_token(split_up_token + ".[^\\s]");
+  single_character_token.setMinimal(true);
   QStringList comment_strings =
-      SplitStringKeepingSeparartor(edited_comment, split_up_token);
+      SplitStringKeepingSeparartor(edited_comment, single_character_token);
 
   edited_comment.clear();
   for (auto comment_string : comment_strings) {
     comment_string = comment_string.trimmed();
     if (!comment_string.isEmpty()) {
+      if (comment_string.contains(single_character_token)) {
+        qDebug() << comment_string;
+      } else {
+        qDebug() << "NOT";
+      }
       QString first_letter = comment_string.left(1);
       comment_string.replace(0, 1, first_letter.toUpper());
       comment_string.replace("\n", " ");
@@ -145,7 +154,7 @@ QString CommentParser::CleanCommentsClutter(const QString &comment) {
 }
 
 QStringList CommentParser::SplitStringKeepingSeparartor(
-    const QString &string, const QString &separator) {
+    const QString &string, const QRegExp &separator) {
   QStringList split_strings;
   int separator_count = string.count(separator);
   for (int i = 0; i <= separator_count; ++i) {
