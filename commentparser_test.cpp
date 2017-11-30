@@ -160,4 +160,18 @@ SCENARIO("Rewriting single comments according to code style") {
       }
     }
   }
+
+  GIVEN("Comment preceded by // ") {
+    QString wrong_source_code = "// interesting thing";
+
+    WHEN("Run the wrong code through comment parser") {
+      auto parsed_source_code =
+          CommentParser::RewriteCommentsAccordingToCodeStyle(wrong_source_code);
+      THEN("Comment has a proper capitalization and a dot at the end") {
+        QString right_source_code = "// Interesting thing.";
+        REQUIRE(parsed_source_code.toStdString() ==
+                right_source_code.toStdString());
+      }
+    }
+  }
 }

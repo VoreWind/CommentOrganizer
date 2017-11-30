@@ -28,6 +28,9 @@ QString CommentParser::RewriteCommentsAccordingToCodeStyle(
   QString edited_file_text = file_text;
 
   edited_file_text = RearrangeCommentsFound(
+      "(\\s*\\/\\/[^\n]*$)+", edited_file_text, *FixProperlyMarkedComments);
+
+  edited_file_text = RearrangeCommentsFound(
       "[[\\w \\(\\)]*\\/\\*[^\n]*\\*\\/[^\\n]+", edited_file_text,
       *RemoveCommentFromTheMiddleOfLine);
 
@@ -88,12 +91,8 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
   return edited_comment;
 }
 
-QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
-  QString edited_comment = comment;
-  edited_comment = CleanCommentsClutter(edited_comment);
-
-  edited_comment = RemoveDecorationsFromStartOfString(edited_comment);
-
+void CommentParser::ParseDoxyGenStyleComments(QString &edited_comment,
+                                              const QString &join_token) {
   QString split_up_token;
   if (edited_comment.contains("@")) {
     split_up_token = "@";
@@ -110,15 +109,10 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
   for (auto comment_string : comment_strings) {
     comment_string = comment_string.trimmed();
     if (!comment_string.isEmpty()) {
-      if (comment_string.contains(single_character_token)) {
-        qDebug() << comment_string;
-      } else {
-        qDebug() << "NOT";
-      }
       QString first_letter = comment_string.left(1);
       comment_string.replace(0, 1, first_letter.toUpper());
       comment_string.replace("\n", " ");
-      comment_string.prepend("/// ");
+      comment_string.prepend(join_token + " ");
 
       if (!comment_string.endsWith(".")) {
         comment_string.append(".");
@@ -127,6 +121,29 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
     }
   }
   edited_comment.chop(1);
+}
+
+QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
+  QString edited_comment = comment;
+  edited_comment = CleanCommentsClutter(edited_comment);
+
+  edited_comment = RemoveDecorationsFromStartOfString(edited_comment);
+
+  ParseDoxyGenStyleComments(edited_comment, "///");
+  return edited_comment;
+}
+
+QString CommentParser::FixProperlyMarkedComments(const QString &comment) {
+  QString edited_comment = comment;
+  QRegExp token_finder_regexp("\\/+");
+  token_finder_regexp.indexIn(edited_comment);
+  QString join_token = token_finder_regexp.cap(0);
+  QRegExp splitter("\\/[\\/]+\\s*");
+
+  edited_comment =
+      edited_comment.split(splitter, QString::SkipEmptyParts).join(" ");
+  ParseDoxyGenStyleComments(edited_comment, join_token);
+
   return edited_comment;
 }
 

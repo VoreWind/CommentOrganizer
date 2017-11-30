@@ -14,6 +14,7 @@ class CommentParser {
       const QString &line_with_comment);
   static QString RearrangeMultipleStringComments(const QString &comment);
   static QString RearrangeDoxyGenComments(const QString &comment);
+  static QString FixProperlyMarkedComments(const QString &comment);
 
   static QString CleanCommentsClutter(const QString &comment);
 
@@ -28,6 +29,8 @@ class CommentParser {
       const QString &regex_string,
       const QString &text,
       QString (*rearrangement_method)(const QString &));
+  static void ParseDoxyGenStyleComments(QString &edited_comment,
+                                        const QString &join_token);
 };
 
 #endif  // COMMENTPARSER_H
