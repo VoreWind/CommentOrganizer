@@ -127,6 +127,24 @@ SCENARIO("Rewriting single comments according to code style") {
     }
   }
 
+  GIVEN(
+      "Doxygen comment with a mixture of multi-lettered and single-lettered "
+      "tags") {
+    QString wrong_source_code =
+        "/*!param   *comment1\n * \\param   comment2 \\a thingy*/";
+
+    WHEN("Run the wrong code through comment parser") {
+      auto parsed_source_code =
+          CommentParser::RewriteCommentsAccordingToCodeStyle(wrong_source_code);
+      THEN("The comment gets split only at multi-lined tags") {
+        QString right_source_code =
+            "/// Param   *comment1.\n/// \\param   comment2 \\a thingy.";
+        REQUIRE(parsed_source_code.toStdString() ==
+                right_source_code.toStdString());
+      }
+    }
+  }
+
   GIVEN("extern C comment at the end of pure C block") {
     QString wrong_source_code =
         "#ifdef __cplusplus\n} /* extern \"C\" { */\n#endif";
@@ -136,7 +154,7 @@ SCENARIO("Rewriting single comments according to code style") {
           CommentParser::RewriteCommentsAccordingToCodeStyle(wrong_source_code);
       THEN("This text in the comments should not be affected by parser") {
         QString right_source_code =
-            "#ifdef __cplusplus\n}  // extern \"C\" {\n#endif";
+            "#ifdef __cplusplus\n} // extern \"C\" {\n#endif";
         REQUIRE(parsed_source_code.toStdString() ==
                 right_source_code.toStdString());
       }
