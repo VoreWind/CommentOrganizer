@@ -14,10 +14,11 @@ QStringList CommentParser::FindCommentsMatchingRegexp(QString edited_file_text,
   QStringList captured_comments;
 
   while (first_index != -1) {
-    QStringList locally_captured_list = reg_exp.capturedTexts();
-    first_index = reg_exp.indexIn(edited_file_text, first_index + 1);
+    QString locally_captured_comment = reg_exp.cap(0);
+    first_index =
+        reg_exp.indexIn(edited_file_text, locally_captured_comment.count());
 
-    captured_comments.append(locally_captured_list);
+    captured_comments.append(locally_captured_comment);
   }
 
   return captured_comments;

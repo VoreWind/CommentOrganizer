@@ -162,7 +162,7 @@ SCENARIO("Rewriting single comments according to code style") {
   }
 
   GIVEN("Comment preceded by // ") {
-    QString wrong_source_code = "// interesting thing";
+    QString wrong_source_code = "// Interesting thing";
 
     WHEN("Run the wrong code through comment parser") {
       auto parsed_source_code =
