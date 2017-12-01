@@ -30,9 +30,8 @@ QString CommentParser::RewriteCommentsAccordingToCodeStyle(
     const QString &file_text) {
   QString edited_file_text = file_text;
 
-  edited_file_text =
-      RearrangeCommentsFound("(^[ \\t]*\\/\\/[^\n]+[\n$])+", edited_file_text,
-                             *FixProperlyMarkedComments);
+  edited_file_text = RearrangeCommentsFound(
+      "\n *\\/\\/[^\n]+\n", edited_file_text, *FixProperlyMarkedComments);
 
   edited_file_text = RearrangeCommentsFound(
       "[[\\w \\(\\)]*\\/\\*[^\n]*\\*\\/[^\\n]+", edited_file_text,
@@ -153,7 +152,8 @@ QString CommentParser::FixProperlyMarkedComments(const QString &comment) {
   edited_comment =
       edited_comment.split(splitter, QString::SkipEmptyParts).join(" ");
   ParseDoxyGenStyleComments(edited_comment, join_token);
-
+  edited_comment.append("\n");
+  edited_comment.prepend("\n");
   return edited_comment;
 }
 

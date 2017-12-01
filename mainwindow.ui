@@ -66,8 +66,9 @@
 /* Maybe life is
  * really painful: */
 
-static const char* const errors_list[] = {
-/*0*/           &quot;You win&quot;,
+// slightly wrong comment
+
+// Even less wrong comment
 
 };
 

@@ -174,30 +174,31 @@ SCENARIO("Rewriting single comments according to code style") {
       }
     }
   }
-  GIVEN("Multiline comment preceded by // ") {
-    QString wrong_source_code =
-        "// interesting thing\n\n\n// another interesting thing";
+
+  GIVEN("Comment preceded by // ") {
+    QString wrong_source_code = "\n// interesting thing\n";
 
     WHEN("Run the wrong code through comment parser") {
       auto parsed_source_code =
           CommentParser::RewriteCommentsAccordingToCodeStyle(wrong_source_code);
       THEN("Comment has a proper capitalization and a dot at the end") {
-        QString right_source_code =
-            "// Interesting thing.\n\n\n// Another interesting thing.";
+        QString right_source_code = "\n// Interesting thing.\n";
         REQUIRE(parsed_source_code.toStdString() ==
                 right_source_code.toStdString());
       }
     }
   }
 
-  GIVEN("Comment preceded by // ") {
-    QString wrong_source_code = "// Interesting thing";
+  GIVEN("Multiline comment preceded by // ") {
+    QString wrong_source_code =
+        "\n// wierd thing\n\n\n// another interesting thing\n";
 
     WHEN("Run the wrong code through comment parser") {
       auto parsed_source_code =
           CommentParser::RewriteCommentsAccordingToCodeStyle(wrong_source_code);
       THEN("Comment has a proper capitalization and a dot at the end") {
-        QString right_source_code = "// Interesting thing.";
+        QString right_source_code =
+            "\n// Wierd thing.\n\n\n// Another interesting thing.\n";
         REQUIRE(parsed_source_code.toStdString() ==
                 right_source_code.toStdString());
       }
