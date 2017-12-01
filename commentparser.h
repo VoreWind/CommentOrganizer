@@ -31,6 +31,9 @@ class CommentParser {
       QString (*rearrangement_method)(const QString &));
   static void ParseDoxyGenStyleComments(QString &edited_comment,
                                         const QString &join_token);
+  static bool IsCommentEndingInPunctuation(const QString &edited_comment);
+
+  static const QString kPossiblePunctuation;
 };
 
 #endif  // COMMENTPARSER_H

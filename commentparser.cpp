@@ -5,6 +5,8 @@
 #include <QString>
 #include <QStringList>
 
+const QString CommentParser::kPossiblePunctuation = ".,;:!?";
+
 QStringList CommentParser::FindCommentsMatchingRegexp(QString edited_file_text,
                                                       QString reg_exp_text) {
   QRegExp reg_exp(reg_exp_text);
@@ -28,8 +30,9 @@ QString CommentParser::RewriteCommentsAccordingToCodeStyle(
     const QString &file_text) {
   QString edited_file_text = file_text;
 
-  edited_file_text = RearrangeCommentsFound(
-      "(\\s*\\/\\/[^\n]*$)+", edited_file_text, *FixProperlyMarkedComments);
+  edited_file_text =
+      RearrangeCommentsFound("(^[ \\t]*\\/\\/[^\n]+[\n$])+", edited_file_text,
+                             *FixProperlyMarkedComments);
 
   edited_file_text = RearrangeCommentsFound(
       "[[\\w \\(\\)]*\\/\\*[^\n]*\\*\\/[^\\n]+", edited_file_text,
@@ -80,7 +83,7 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
 
     edited_comment.replace(line_breaker_regexp, " ");
 
-    if (!edited_comment.endsWith(".")) {
+    if (!IsCommentEndingInPunctuation(edited_comment)) {
       edited_comment.append(".");
     }
 
@@ -115,13 +118,19 @@ void CommentParser::ParseDoxyGenStyleComments(QString &edited_comment,
       comment_string.replace("\n", " ");
       comment_string.prepend(join_token + " ");
 
-      if (!comment_string.endsWith(".")) {
+      if (!IsCommentEndingInPunctuation(comment_string)) {
         comment_string.append(".");
       }
       edited_comment.append(comment_string + "\n");
     }
   }
   edited_comment.chop(1);
+}
+
+bool CommentParser::IsCommentEndingInPunctuation(
+    const QString &edited_comment) {
+  QString last_character = edited_comment.right(1);
+  return kPossiblePunctuation.contains(last_character);
 }
 
 QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
