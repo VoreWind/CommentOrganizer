@@ -15,8 +15,8 @@ QStringList CommentParser::FindCommentsMatchingRegexp(QString edited_file_text,
 
   while (first_index != -1) {
     QString locally_captured_comment = reg_exp.cap(0);
-    first_index =
-        reg_exp.indexIn(edited_file_text, locally_captured_comment.count());
+    first_index = reg_exp.indexIn(
+        edited_file_text, first_index + locally_captured_comment.count());
 
     captured_comments.append(locally_captured_comment);
   }
