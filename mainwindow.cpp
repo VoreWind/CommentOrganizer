@@ -32,8 +32,12 @@ void MainWindow::CleanComments() {
 }
 
 void MainWindow::SelectSourceFolder() {
+  QString directory_path = "/home";
+  if (!ui->source_directory_line->text().isEmpty()) {
+    directory_path = ui->source_directory_line->text();
+  }
   QString dir = QFileDialog::getExistingDirectory(
-      this, tr("Source Directory"), "/home",
+      this, tr("Source Directory"), directory_path,
       QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
   ui->source_directory_line->setText(dir);
@@ -41,8 +45,12 @@ void MainWindow::SelectSourceFolder() {
 }
 
 void MainWindow::SelectDestinationFolder() {
+  QString directory_path = "/home";
+  if (!ui->source_directory_line->text().isEmpty()) {
+    directory_path = ui->source_directory_line->text();
+  }
   QString dir = QFileDialog::getExistingDirectory(
-      this, tr("Destination Directory"), "/home/",
+      this, tr("Destination Directory"), directory_path,
       QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
   ui->destination_directory_line->setText(dir);
@@ -54,8 +62,9 @@ void MainWindow::CleanAllTextInFolder() {
     flag = QDirIterator::Subdirectories;
   }
 
-  QDirIterator it(ui->source_directory_line->text(), QStringList() << "*.h"
-                                                                   << "*.c",
+  QDirIterator it(ui->source_directory_line->text(),
+                  QStringList() << "*.h"
+                                << "*.c",
                   QDir::Files, flag);
 
   while (it.hasNext()) {
