@@ -15,6 +15,7 @@ class CommentParser {
   static QString RearrangeMultipleStringComments(const QString &comment);
   static QString RearrangeDoxyGenComments(const QString &comment);
   static QString FixProperlyMarkedComments(const QString &comment);
+  static QString FixSideComments(const QString &string_with_comment);
 
   static QString CleanCommentsClutter(const QString &comment);
 

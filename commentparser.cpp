@@ -34,6 +34,9 @@ QString CommentParser::RewriteCommentsAccordingToCodeStyle(
   edited_file_text.replace(QRegExp("\n *\\/\\/ *\n"), "\n");
 
   edited_file_text =
+      RearrangeCommentsFound("\n[ \t]+[^\n]+[ \t]+\\/\\/[ \t]+[^\n]+",
+                             edited_file_text, *FixSideComments, false);
+  edited_file_text =
       RearrangeCommentsFound("(\n *\\/\\/[^\n]+)+\n", edited_file_text,
                              *FixProperlyMarkedComments, false);
 
@@ -174,6 +177,27 @@ QString CommentParser::FixProperlyMarkedComments(const QString &comment) {
   edited_comment.append("\n");
   edited_comment.prepend("\n");
   return edited_comment;
+}
+
+QString CommentParser::FixSideComments(const QString &string_with_comment) {
+  const QString comment_splitter = "//";
+  int comment_position =
+      string_with_comment.indexOf(comment_splitter) + comment_splitter.count();
+  QString proper_comment =
+      string_with_comment.right(string_with_comment.count() - comment_position);
+
+  proper_comment = proper_comment.trimmed();
+  const QString old_comment = proper_comment;
+  QString first_letter = proper_comment.left(1);
+  proper_comment.replace(0, 1, first_letter.toUpper());
+
+  if (!IsCommentEndingInPunctuation(proper_comment)) {
+    proper_comment.append(".");
+  }
+
+  QString edited_string_with_comment = string_with_comment;
+  edited_string_with_comment.replace(old_comment, proper_comment);
+  return edited_string_with_comment;
 }
 
 QString CommentParser::RemoveDecorationsFromStartOfString(
