@@ -136,7 +136,7 @@ void CommentParser::ParseDoxyGenStyleComments(QString &edited_comment,
 
 void CommentParser::RemoveStarFromDoxyGenParametersNames(
     QString &comment_string) {
-  QRegExp parameter_with_stars("^ *\\\\[\\w]+ +\\*+");
+  QRegExp parameter_with_stars("^ *[\\\\@][\\w]+ +\\*+");
   if (comment_string.contains(parameter_with_stars)) {
     QRegExp star_regexp("\\*+");
     int star_position = star_regexp.indexIn(comment_string);
