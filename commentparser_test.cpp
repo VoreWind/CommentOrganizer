@@ -220,4 +220,22 @@ SCENARIO("Rewriting single comments according to code style") {
       }
     }
   }
+
+  GIVEN(
+      "Single line of code followed by //-style comment and containing the "
+      "same text as the comment") {
+    QString wrong_source_code = "\n   k = THING;  // THING\n";
+
+    WHEN("Run the wrong code through comment parser") {
+      auto parsed_source_code =
+          CommentParser::RewriteCommentsAccordingToCodeStyle(wrong_source_code);
+      THEN(
+          "Comment has a proper capitalization and a dot at the end. The code "
+          "is unaltered") {
+        QString right_source_code = "\n   k = THING;  // THING.\n";
+        REQUIRE(parsed_source_code.toStdString() ==
+                right_source_code.toStdString());
+      }
+    }
+  }
 }

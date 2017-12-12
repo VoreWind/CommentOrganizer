@@ -6,12 +6,12 @@ class QRegExp;
 class QStringList;
 
 class CommentParser {
- public:
+public:
   static QString RewriteCommentsAccordingToCodeStyle(const QString &file_text);
 
- private:
-  static QString RemoveCommentFromTheMiddleOfLine(
-      const QString &line_with_comment);
+private:
+  static QString
+  RemoveCommentFromTheMiddleOfLine(const QString &line_with_comment);
   static QString RearrangeMultipleStringComments(const QString &comment);
   static QString RearrangeDoxyGenComments(const QString &comment);
   static QString FixProperlyMarkedComments(const QString &comment);
@@ -27,17 +27,17 @@ class CommentParser {
 
   static QString RemoveDecorationsFromStartOfString(const QString &comment);
 
-  static QString RearrangeCommentsFound(
-      const QString &regex_string,
-      const QString &text,
-      QString (*rearrangement_method)(const QString &),
-      bool is_minimal_regexp = true);
+  static QString
+  RearrangeCommentsFound(const QString &regex_string, const QString &text,
+                         QString (*rearrangement_method)(const QString &),
+                         bool is_minimal_regexp = true);
   static void ParseDoxyGenStyleComments(QString &edited_comment,
                                         const QString &join_token);
   static bool IsCommentEndingInPunctuation(const QString &edited_comment);
 
   static const QString kPossiblePunctuation;
   static void RemoveStarFromDoxyGenParametersNames(QString &comment_string);
+  static void RemoveHashSymbolsFromComment(QString &comment_string);
 };
 
-#endif  // COMMENTPARSER_H
+#endif // COMMENTPARSER_H

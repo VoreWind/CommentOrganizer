@@ -27,14 +27,14 @@ QStringList CommentParser::FindCommentsMatchingRegexp(QString edited_file_text,
   return captured_comments;
 }
 
-QString CommentParser::RewriteCommentsAccordingToCodeStyle(
-    const QString &file_text) {
+QString
+CommentParser::RewriteCommentsAccordingToCodeStyle(const QString &file_text) {
   QString edited_file_text = file_text;
 
   edited_file_text.replace(QRegExp("\n *\\/\\/ *\n"), "\n");
 
   edited_file_text =
-      RearrangeCommentsFound("\n[ \t]+[^\n]+[ \t]+\\/\\/[ \t]+[^\n]+",
+      RearrangeCommentsFound("\n[ \t]+\\w+[^\n]+[ \t]+\\/\\/[ \t]+[^\n]+",
                              edited_file_text, *FixSideComments, false);
   edited_file_text =
       RearrangeCommentsFound("(\n *\\/\\/[^\n]+)+\n", edited_file_text,
@@ -65,10 +65,8 @@ QString CommentParser::RemoveCommentFromTheMiddleOfLine(
 }
 
 QString CommentParser::RearrangeCommentsFound(
-    const QString &regex_string,
-    const QString &text,
-    QString (*rearrangement_method)(const QString &),
-    bool is_minimal_regexp) {
+    const QString &regex_string, const QString &text,
+    QString (*rearrangement_method)(const QString &), bool is_minimal_regexp) {
   QString edited_text = text;
   QStringList inline_comments =
       FindCommentsMatchingRegexp(edited_text, regex_string, is_minimal_regexp);
@@ -89,6 +87,7 @@ QString CommentParser::RearrangeMultipleStringComments(const QString &comment) {
     QRegExp line_breaker_regexp("\n[ \\*]*");
 
     edited_comment.replace(line_breaker_regexp, " ");
+    RemoveHashSymbolsFromComment(edited_comment);
 
     if (!IsCommentEndingInPunctuation(edited_comment)) {
       edited_comment.append(".");
@@ -148,6 +147,18 @@ void CommentParser::RemoveStarFromDoxyGenParametersNames(
   }
 }
 
+void CommentParser::RemoveHashSymbolsFromComment(QString &comment_string) {
+  if (comment_string.contains("##")) {
+    while (comment_string.contains("##")) {
+      comment_string.remove("##");
+    }
+
+    while (comment_string.contains("  ")) {
+      comment_string.replace("  ", " ");
+    }
+  }
+}
+
 bool CommentParser::IsCommentEndingInPunctuation(
     const QString &edited_comment) {
   QString last_character = edited_comment.right(1);
@@ -159,6 +170,7 @@ QString CommentParser::RearrangeDoxyGenComments(const QString &comment) {
   edited_comment = CleanCommentsClutter(edited_comment);
 
   edited_comment = RemoveDecorationsFromStartOfString(edited_comment);
+  RemoveHashSymbolsFromComment(edited_comment);
 
   ParseDoxyGenStyleComments(edited_comment, "///");
   return edited_comment;
@@ -173,6 +185,7 @@ QString CommentParser::FixProperlyMarkedComments(const QString &comment) {
 
   edited_comment =
       edited_comment.split(splitter, QString::SkipEmptyParts).join(" ");
+  RemoveHashSymbolsFromComment(edited_comment);
   ParseDoxyGenStyleComments(edited_comment, join_token);
   edited_comment.append("\n");
   edited_comment.prepend("\n");
@@ -181,15 +194,19 @@ QString CommentParser::FixProperlyMarkedComments(const QString &comment) {
 
 QString CommentParser::FixSideComments(const QString &string_with_comment) {
   const QString comment_splitter = "//";
-  int comment_position =
-      string_with_comment.indexOf(comment_splitter) + comment_splitter.count();
+  int comment_position = string_with_comment.indexOf(comment_splitter);
   QString proper_comment =
       string_with_comment.right(string_with_comment.count() - comment_position);
 
+  QRegExp comment_clutter_regexp("\\/+ +");
+  comment_clutter_regexp.indexIn(proper_comment);
+  QString comment_clutter = comment_clutter_regexp.cap(0);
   proper_comment = proper_comment.trimmed();
+  RemoveHashSymbolsFromComment(proper_comment);
+
   const QString old_comment = proper_comment;
-  QString first_letter = proper_comment.left(1);
-  proper_comment.replace(0, 1, first_letter.toUpper());
+  QString first_letter = proper_comment.mid(comment_clutter.count(), 1);
+  proper_comment.replace(comment_clutter.count(), 1, first_letter.toUpper());
 
   if (!IsCommentEndingInPunctuation(proper_comment)) {
     proper_comment.append(".");
@@ -200,8 +217,8 @@ QString CommentParser::FixSideComments(const QString &string_with_comment) {
   return edited_string_with_comment;
 }
 
-QString CommentParser::RemoveDecorationsFromStartOfString(
-    const QString &comment) {
+QString
+CommentParser::RemoveDecorationsFromStartOfString(const QString &comment) {
   QStringList comment_lines = comment.split("\n");
   QString edited_comment;
   for (auto comment_line : comment_lines) {
@@ -223,8 +240,9 @@ QString CommentParser::CleanCommentsClutter(const QString &comment) {
   return cleaned_comment.trimmed();
 }
 
-QStringList CommentParser::SplitStringKeepingSeparartor(
-    const QString &string, const QRegExp &separator) {
+QStringList
+CommentParser::SplitStringKeepingSeparartor(const QString &string,
+                                            const QRegExp &separator) {
   QStringList split_strings;
   int separator_count = string.count(separator);
   for (int i = 0; i <= separator_count; ++i) {

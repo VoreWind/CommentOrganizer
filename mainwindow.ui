@@ -60,22 +60,16 @@
     <item row="0" column="0" colspan="4">
      <widget class="QPlainTextEdit" name="text_edit">
       <property name="plainText">
-       <string>#ifndef BASE_ERRORS_H
-#define BASE_ERRORS_H
-
-/* Maybe life is
- * really painful: */
-
-//
-// slightly wrong comment
-//
-
-// Even less wrong comment
-
-};
-
-
-#endif  // BASE_ERRORS_H</string>
+       <string>
+/*!\param   *cert сертификат УЦ, из него заполняется issuerNameHash,
+ * issuerKeyHash
+ * \param   *issuer_name данные имен для хеша имен
+ * \param   *public_key данные ключа для хеша ключа
+ * \return  0 в случае успеха, иначе код ошибки
+ * \brief   Возвращает данны еиз сертификата для подсчёта хеш public_key и
+ * issuer_name */
+int get_name_and_key(buff_t* cert, buff_t* issuer_name, buff_t* public_key);
+</string>
       </property>
      </widget>
     </item>
