@@ -169,7 +169,7 @@ void CommentParser::FixExternCBracket(QString &comment_string) {
 
   QString substring =
       comment_string.right(comment_string.count() - closing_bracket_position);
-  QString bracket_string = substring.section("\n", 1, 3);
+  QString bracket_string = substring.section("\n", 1, 3).trimmed();
   const QString proper_bracket_string = "}  // extern "
                                         "\"C\""
                                         "\n  #endif  // __cplusplus";
@@ -180,7 +180,7 @@ void CommentParser::FixExternCBracket(QString &comment_string) {
 }
 
 int CommentParser::FindExternCBracket(const QString &comment_string) {
-  return comment_string.indexOf(QRegExp("#ifdef __cplusplus\n}"));
+  return comment_string.indexOf(QRegExp("#ifdef __cplusplus\n *\\}"));
 }
 
 bool CommentParser::IsCommentEndingInPunctuation(
