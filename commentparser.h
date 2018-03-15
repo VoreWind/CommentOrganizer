@@ -38,6 +38,8 @@ private:
   static const QString kPossiblePunctuation;
   static void RemoveStarFromDoxyGenParametersNames(QString &comment_string);
   static void RemoveHashSymbolsFromComment(QString &comment_string);
+  static void FixExternCBracket(QString &comment_string);
+  static int FindExternCBracket(const QString &comment_string);
 };
 
 #endif // COMMENTPARSER_H

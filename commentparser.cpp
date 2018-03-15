@@ -33,6 +33,8 @@ CommentParser::RewriteCommentsAccordingToCodeStyle(const QString &file_text) {
 
   edited_file_text.replace(QRegExp("\n *\\/\\/ *\n"), "\n");
 
+  FixExternCBracket(edited_file_text);
+
   edited_file_text =
       RearrangeCommentsFound("\n[ \t]+\\w+[^\n]+[ \t]+\\/\\/[ \t]+[^\n]+",
                              edited_file_text, *FixSideComments, false);
@@ -157,6 +159,28 @@ void CommentParser::RemoveHashSymbolsFromComment(QString &comment_string) {
       comment_string.replace("  ", " ");
     }
   }
+}
+
+void CommentParser::FixExternCBracket(QString &comment_string) {
+  int closing_bracket_position = FindExternCBracket(comment_string);
+  if (closing_bracket_position == -1) {
+    return;
+  }
+
+  QString substring =
+      comment_string.right(comment_string.count() - closing_bracket_position);
+  QString bracket_string = substring.section("\n", 1, 3);
+  const QString proper_bracket_string = "}  // extern "
+                                        "\"C\""
+                                        "\n  #endif  // __cplusplus";
+
+  if (bracket_string != proper_bracket_string) {
+    comment_string.replace(bracket_string, proper_bracket_string);
+  }
+}
+
+int CommentParser::FindExternCBracket(const QString &comment_string) {
+  return comment_string.indexOf(QRegExp("#ifdef __cplusplus\n}"));
 }
 
 bool CommentParser::IsCommentEndingInPunctuation(
